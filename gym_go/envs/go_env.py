@@ -63,15 +63,17 @@ class GoEnv(gym.Env):
         try:
             self.state_ = gogame.next_state(self.state_, action, canonical=False)
             reward = self.reward()
-            if self.learn_rules:
-                reward += 10
+            self.done = gogame.game_ended(self.state_)
+            # if self.learn_rules:
+            #     reward += 10
         except AssertionError as e:
-            if self.learn_rules:
-                reward = -10
-            else:
-                raise e
+            reward = -10
+            self.done = True
+            # if self.learn_rules:
+            #     reward = -10
+            # else:
+            #     raise e
 
-        self.done = gogame.game_ended(self.state_)
         return np.copy(self.state_), reward, self.done, self.info()
 
     def game_ended(self):
