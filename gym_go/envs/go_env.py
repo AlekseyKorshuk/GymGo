@@ -59,9 +59,14 @@ class GoEnv(gym.Env):
         elif action is None:
             action = self.size ** 2
 
-        self.state_ = gogame.next_state(self.state_, action, canonical=False)
+        try:
+            self.state_ = gogame.next_state(self.state_, action, canonical=False)
+            reward = self.reward()
+            reward += 10
+        except AssertionError:
+            reward = -10
         self.done = gogame.game_ended(self.state_)
-        return np.copy(self.state_), self.reward(), self.done, self.info()
+        return np.copy(self.state_), reward, self.done, self.info()
 
     def game_ended(self):
         return self.done
