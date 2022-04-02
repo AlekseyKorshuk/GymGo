@@ -21,7 +21,7 @@ class GoEnv(gym.Env):
     govars = govars
     gogame = gogame
 
-    def __init__(self, size, komi=0, reward_method='real'):
+    def __init__(self, size, komi=0, reward_method='real', learn_rules=False):
         '''
         @param reward_method: either 'heuristic' or 'real'
         heuristic: gives # black pieces - # white pieces.
@@ -30,6 +30,7 @@ class GoEnv(gym.Env):
         '''
         self.size = size
         self.komi = komi
+        self.learn_rules = learn_rules
         self.state_ = gogame.init_state(size)
         self.reward_method = RewardMethod(reward_method)
         self.observation_space = gym.spaces.Box(np.float32(0), np.float32(govars.NUM_CHNLS),
@@ -62,9 +63,14 @@ class GoEnv(gym.Env):
         try:
             self.state_ = gogame.next_state(self.state_, action, canonical=False)
             reward = self.reward()
-            reward += 10
-        except AssertionError:
-            reward = -10
+            if self.learn_rules:
+                reward += 10
+        except AssertionError as e:
+            if self.learn_rules:
+                reward = -10
+            else:
+                raise e
+
         self.done = gogame.game_ended(self.state_)
         return np.copy(self.state_), reward, self.done, self.info()
 
