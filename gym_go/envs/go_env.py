@@ -149,7 +149,7 @@ class GoEnv(gym.Env):
         Area rule definition: https://en.wikipedia.org/wiki/Rules_of_Go#End
         '''
         if self.reward_method == RewardMethod.REAL:
-            return self.winner()
+            return self.winner() * 10
 
         elif self.reward_method == RewardMethod.HEURISTIC:
             black_area, white_area = gogame.areas(self.state_)
