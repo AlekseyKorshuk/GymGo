@@ -160,6 +160,10 @@ class GoEnv(gym.Env):
         elif self.reward_method == RewardMethod.HEURISTIC:
             black_area, white_area = gogame.areas(self.state_)
             area_difference = black_area - white_area
+            state = np.copy(self.state_)
+            player = turn(state)
+            if player == 1:
+                area_difference *= -1
             komi_correction = area_difference - self.komi
             if self.game_ended():
                 return (1 if komi_correction > 0 else -1) * self.size ** 2
