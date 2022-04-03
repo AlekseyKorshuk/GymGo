@@ -67,7 +67,7 @@ class GoEnv(gym.Env):
             # if self.learn_rules:
             #     reward += 10
         except AssertionError as e:
-            reward = -10
+            reward = -np.inf
             self.done = True
             # if self.learn_rules:
             #     reward = -10
@@ -149,7 +149,7 @@ class GoEnv(gym.Env):
         Area rule definition: https://en.wikipedia.org/wiki/Rules_of_Go#End
         '''
         if self.reward_method == RewardMethod.REAL:
-            return self.winner() * 10
+            return self.winner() * 1000
 
         elif self.reward_method == RewardMethod.HEURISTIC:
             black_area, white_area = gogame.areas(self.state_)
