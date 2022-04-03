@@ -4,6 +4,7 @@ import gym
 import numpy as np
 
 from gym_go import govars, rendering, gogame
+from gym_go.gogame import turn
 
 
 class RewardMethod(Enum):
@@ -125,7 +126,12 @@ class GoEnv(gym.Env):
         """
         :return: Who's currently winning in BLACK's perspective, regardless if the game is over
         """
-        return gogame.winning(self.state_, self.komi)
+        result = gogame.winning(self.state_, self.komi)
+        state = np.copy(self.state_)
+        player = turn(state)
+        if player == 0:
+            return result
+        return result * -1
 
     def winner(self):
         """
