@@ -89,6 +89,9 @@ class GoEnv(gym.Env):
     def valid_moves(self):
         return gogame.valid_moves(self.state_)
 
+    def action_masks(self):
+        return [bool(i) for i in self.valid_moves()]
+
     def uniform_random_action(self):
         valid_moves = self.valid_moves()
         valid_move_idcs = np.argwhere(valid_moves).flatten()
